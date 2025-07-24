@@ -1,30 +1,315 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Master Board</title>
+  <style>
+    body {
+      font-family: "맑은 고딕", sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-{% block title %}홈 - 사용자 인증 시스템{% endblock %}
+    h1.title {
+      color: #e63946;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body text-center">
-                <h1 class="card-title">사용자 인증 시스템</h1>
-                {% if user.is_authenticated %}
-                    <p class="card-text">
-                        <strong>{{ user.username }}</strong>님, 환영합니다!
-                    </p>
-                    <p class="text-muted">
-                        이메일: {{ user.email|default:"설정되지 않음" }}<br>
-                        가입일: {{ user.date_joined|date:"Y년 m월 d일" }}
-                    </p>
-                    <a href="{% url 'accounts:profile' %}" class="btn btn-primary">프로필 보기</a>
-                    <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary">로그아웃</a>
-                {% else %}
-                    <p class="card-text">로그인하여 서비스를 이용해보세요.</p>
-                    <a href="{% url 'accounts:login' %}" class="btn btn-primary">로그인</a>
-                    <a href="{% url 'accounts:signup' %}" class="btn btn-outline-primary">회원가입</a>
-                {% endif %}
-            </div>
-        </div>
+    /* 로그인 버튼 wrapper */
+    .login-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 20px;
+    }
+
+    .login-btn {
+      background-color: white;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #e63946;
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    ul#topmenu {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    ul#topmenu li {
+      list-style: none;
+      background-color: #ffffff;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    ul#topmenu li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul#topmenu li:hover {
+      background-color: #e63946;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .content {
+      background-color: #ffffff;
+      width: 80%;
+      max-width: 900px;
+      margin: 0 auto 40px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+
+    .content h3 {
+    margin-top: 20px;
+    }
+
+    .content p {
+    margin-top: 15px;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background-color: #ccc;
+      margin: 40px 0;
+    }
+
+    /* 게시판 테이블 스타일 */
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .preview-table th,
+    .preview-table td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .preview-table th {
+      background-color: #f8f8f8;
+      font-weight: bold;
+    }
+
+    /* 갤러리 박스 */
+    .gallery {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .gallery-item {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      width: 200px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .gallery-item p {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* 더보기 버튼 스타일 */
+    .more-btn {
+      display: inline-block;
+      background-color: #e63946;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 14px;
+    }
+
+    .more-btn:hover {
+      background-color: #b32d3d;
+    }
+
+    /* 오른쪽 정렬 */
+    .more-btn-wrapper {
+      text-align: right;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 로그인 버튼 -->
+  <div class="login-wrapper">
+    {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}" class="login-btn">마이페이지</a>
+        <a href="{% url 'accounts:logout' %}" class="login-btn" style="margin-left: 10px;">로그아웃</a>
+    {% else %}
+        <a href="{% url 'accounts:login' %}" class="login-btn">로그인</a>
+    {% endif %}
+  </div>
+
+  <!-- 제목 -->
+  
+    <div>
+        <h1 class="title">Master Board</h1>
+        <nav>
+            <ul id="topmenu">
+                <li><a href="{% url 'home' %}">HOME</a></li>
+                <li><a href="#board">일반게시판</a></li>
+                <li><a href="#gallery">갤러리</a></li>
+                <li><a href="#admin">관리게시판</a></li>
+                <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
+            </ul>
+        </nav>
     </div>
-</div>
-{% endblock %}
+
+  <!-- 콘텐츠 -->
+  <div class="content">
+    <h1>Master Board에 오신 것을 환영합니다!</h1>
+    {% if user.is_authenticated %}
+        <h3><strong>{{ user.username }}</strong>님, 즐거운 시간 보내시길 바랍니다!</h3>
+    {% else %}
+        <h3>즐거운 시간 보내시길 바랍니다!</h3>
+    {% endif %}
+    <p>
+      이 홈페이지는 여러분들의 일상, 사진 갤러리, 공부 자료 등을 공유하는 공간입니다. <br />
+      상단 메뉴를 눌러 다양한 콘텐츠를 확인해보세요!
+    </p>
+  </div>
+
+  <hr />
+
+  <!-- 일반 게시판 -->
+  <div class="content">
+    <h2>📋 일반 게시판 최근 글</h2>
+    <table class="preview-table">
+      <tr>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>날짜</th>
+      </tr>
+      <tr>
+        <td>자바스크립트 질문있어요</td>
+        <td>학생1</td>
+        <td>2025-07-20</td>
+      </tr>
+      <tr>
+        <td>맛집 추천 좀 해주세요~</td>
+        <td>맛잘알</td>
+        <td>2025-07-18</td>
+      </tr>
+      <tr>
+        <td>방학계획 공유해요</td>
+        <td>쏘스윗</td>
+        <td>2025-07-15</td>
+      </tr>
+    </table>
+    <div class="more-btn-wrapper">
+      <a href="#board" class="more-btn">+ 더보기</a>
+    </div>
+  </div>
+
+  <!-- 갤러리 -->
+  <div class="content">
+    <h2>🖼 갤러리 최근 글</h2>
+    <div class="gallery">
+      <div class="gallery-item">
+        <img src="/static/img/photo1.jpg" alt="사진1" />
+        <p>여름 캠핑⛺</p>
+      </div>
+      <div class="gallery-item">
+        <img src="/static/img/photo2.jpg" alt="사진2" />
+        <p>우리집 고양이🐱</p>
+      </div>
+      <div class="gallery-item">
+        <img src="/static/img/photo3.jpg" alt="사진3" />
+        <p>벚꽃길🌸</p>
+      </div>
+    </div>
+    <div class="more-btn-wrapper">
+      <a href="#gallery" class="more-btn">+ 더보기</a>
+    </div>
+  </div>
+
+  <!-- 관리자 게시판 -->
+  <div class="content">
+    <h2>🔒 관리자게시판 공지사항</h2>
+    <table class="preview-table">
+      <tr>
+        <th>제목</th>
+        <th>작성일</th>
+      </tr>
+      <tr>
+        <td>[공지] 서버 점검 안내</td>
+        <td>2025-07-10</td>
+      </tr>
+      <tr>
+        <td>[필독] 커뮤니티 규칙 개정</td>
+        <td>2025-07-05</td>
+      </tr>
+      <tr>
+        <td>[이벤트] 후기 작성 이벤트</td>
+        <td>2025-07-01</td>
+      </tr>
+    </table>
+    <div class="more-btn-wrapper">
+      <a href="#admin" class="more-btn">+ 더보기</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>갤러리 상세보기</title>
+    <style>
+        body {
+            font-family: "맑은 고딕", sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        
+        h1.title {
+            color: #e63946;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        nav { display: flex; justify-content: center; margin: 30px 0; }
+        ul#topmenu {
+            padding: 0; margin: 0; display: flex; gap: 10px;
+        }
+        ul#topmenu li {
+            list-style: none; background-color: #ffffff;
+            color: #1d3557; border: 1px solid #e63946;
+            width: 120px; height: 40px; line-height: 40px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        ul#topmenu li a {
+            display: block; width: 100%; height: 100%;
+            text-decoration: none; color: inherit;
+        }
+        ul#topmenu li:hover {
+            background-color: #e63946; color: white;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            background-color: #ffffff;
+            width: 90%; max-width: 800px;
+            margin: 0 auto; padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+        .gallery-item {
+            text-align: center;
+        }
+
+        .gallery-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item p {
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .gallery-item a {
+            text-decoration: none;
+            color: #1d3557;
+            font-weight: bold;
+        }
+
+        .gallery-item a:hover {
+            text-decoration: underline;
+            color: #e63946;
+        }
+
+        hr {
+            border: none; height: 1px; background-color: #ccc;
+            margin: 40px 0;
+        }
+
+        .login-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 20px;
+        }
+
+        .login-btn {
+            background-color: white;
+            color: #1d3557;
+            border: 1px solid #e63946;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #e63946;
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .button-group a {
+            background-color: white;
+            color: #1d3557;
+            border: 1px solid #e63946;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s ease;
+            font-size: 14px;
+        }
+
+        .button-group a:hover {
+            background-color: #e63946;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}" class="login-btn">마이페이지</a>
+            <a href="{% url 'accounts:logout' %}" class="login-btn" style="margin-left: 10px;">로그아웃</a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}" class="login-btn">로그인</a>
+        {% endif %}
+    </div>
+
+    <h1 class="title">Master Board</h1>
+    <nav>
+        <ul id="topmenu">
+            <li><a href="{% url 'home' %}">HOME</a></li>
+            <li><a href="board_list.html">일반게시판</a></li>
+            <li><a href="gallery.html">갤러리</a></li>
+            <li><a href="admin.html">관리게시판</a></li>
+            <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h2>갤러리 상세보기</h2>
+
+        <div class="gallery-item">
+            <img src="https://via.placeholder.com/600x400" alt="샘플 이미지">
+            <h3>제목1</h3>
+            <p>작성자: 사용자1 | 작성일: 2025-07-20 | 조회수: 45</p>
+            <p>이것은 샘플 이미지입니다. 갤러리에 업로드된 사진에 대한 설명이 여기에 표시됩니다.</p>
+        </div>
+
+        <div class="button-group">
+            <a href="gallery_write.html">수정</a>
+            <a href="gallery.html">목록</a>
+        </div>
+    </div>
+
+    <hr>
+</body>
+</html>

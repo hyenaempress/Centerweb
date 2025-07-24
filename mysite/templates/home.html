@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}홈 - Django 인증 시스템{% endblock %}
+{% block title %}홈 - 사용자 인증 시스템{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
             <div class="card-body text-center">
-                <h1 class="card-title">Django 인증 시스템</h1>
+                <h1 class="card-title">사용자 인증 시스템</h1>
                 {% if user.is_authenticated %}
                     <p class="card-text">
                         <strong>{{ user.username }}</strong>님, 환영합니다!

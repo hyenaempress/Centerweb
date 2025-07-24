@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}프로필 - Django 인증 시스템{% endblock %}
+{% block title %}프로필 - 사용자 인증 시스템{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -10,6 +10,32 @@
                 <h3 class="text-center mb-0">내 프로필</h3>
             </div>
             <div class="card-body">
+                <!-- 프로필 사진 섹션 -->
+                <div class="text-center mb-4">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="프로필 사진" 
+                             class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" 
+                             style="width: 150px; height: 150px;">
+                            <i class="fas fa-user fa-4x text-white"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- 프로필 사진 업로드 폼 -->
+                <form method="post" enctype="multipart/form-data" class="mb-4">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ form.profile_image }}
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">사진 업로드</button>
+                        </div>
+                    </div>
+                </form>
+                
                 <table class="table table-borderless">
                     <tr>
                         <th width="30%">사용자명:</th>

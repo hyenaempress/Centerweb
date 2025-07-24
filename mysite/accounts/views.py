@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, ProfileForm
+from .models import Profile
 
 
 # 회원가입 뷰
@@ -61,7 +62,24 @@ def logout_view(request):
 # 프로필 뷰
 @login_required
 def profile_view(request):
-    return render(request, 'registration/profile.html', {'user': request.user})
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '프로필이 업데이트되었습니다.')
+            return redirect('accounts:profile')
+        else:
+            messages.error(request, '프로필 업데이트 중 오류가 발생했습니다.')
+    else:
+        form = ProfileForm(instance=profile)
+    
+    return render(request, 'registration/profile.html', {
+        'user': request.user,
+        'profile': profile,
+        'form': form
+    })
 
 
 # 홈 뷰

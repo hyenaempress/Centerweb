@@ -1,65 +1,204 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <style>
+    body {
+      font-family: "맑은 고딕", sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-{% block title %}회원가입 - 사용자 인증 시스템{% endblock %}
+    h1.title {
+      color: #e63946;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center mb-0">회원가입</h3>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">사용자명 *</label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="text-danger small">{{ form.username.errors }}</div>
-                        {% endif %}
-                    </div>
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.first_name.id_for_label }}" class="form-label">이름</label>
-                        {{ form.first_name }}
-                    </div>
+    ul#topmenu {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 10px;
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">이메일 *</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="text-danger small">{{ form.email.errors }}</div>
-                        {% endif %}
-                    </div>
+    ul#topmenu li {
+      list-style: none;
+      background-color: #ffffff;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.password1.id_for_label }}" class="form-label">비밀번호 *</label>
-                        {{ form.password1 }}
-                        {% if form.password1.errors %}
-                            <div class="text-danger small">{{ form.password1.errors }}</div>
-                        {% endif %}
-                    </div>
+    ul#topmenu li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
 
-                    <div class="mb-3">
-                        <label for="{{ form.password2.id_for_label }}" class="form-label">비밀번호 확인 *</label>
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="text-danger small">{{ form.password2.errors }}</div>
-                        {% endif %}
-                    </div>
+    ul#topmenu li:hover {
+      background-color: #e63946;
+      color: white;
+      transform: translateY(-2px);
+    }
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">가입하기</button>
-                    </div>
-                </form>
+    .content {
+      background-color: #ffffff;
+      width: 90%;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
 
-                <div class="text-center mt-3">
-                    <p>이미 계정이 있으신가요? <a href="{% url 'accounts:login' %}">로그인</a></p>
-                </div>
-            </div>
-        </div>
+    .content h2 {
+      margin-top: 0;
+      color: #e63946;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #1d3557;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: "맑은 고딕", sans-serif;
+    }
+
+    button {
+      background-color: #e63946;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: #b32d3d;
+    }
+    
+    .error-message {
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .login-link a {
+      color: #e63946;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">회원가입</h1>
+  <nav>
+    <ul id="topmenu">
+      <li><a href="{% url 'home' %}">HOME</a></li>
+      <li><a href="#board">일반게시판</a></li>
+      <li><a href="#gallery">갤러리</a></li>
+      <li><a href="#admin">관리게시판</a></li>
+      <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
+    </ul>
+  </nav>
+  <div class="content">
+    <h2>회원가입</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">아이디 *</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="error-message">{{ form.username.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.first_name.id_for_label }}">이름</label>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+          <div class="error-message">{{ form.first_name.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">이메일 *</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="error-message">{{ form.email.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">비밀번호 *</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div class="error-message">{{ form.password1.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">비밀번호 확인 *</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div class="error-message">{{ form.password2.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <button type="submit">회원가입</button>
+    </form>
+    
+    <div class="login-link">
+      <p>이미 계정이 있으신가요? <a href="{% url 'accounts:login' %}">로그인</a></p>
+      <a href="{% url 'home' %}">홈으로 돌아가기</a>
     </div>
-</div>
-{% endblock %}
+  </div>
+</body>
+</html>

@@ -1,80 +1,199 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>마이페이지</title>
+  <style>
+    body {
+      font-family: "맑은 고딕", sans-serif;
+      background-color: #f0f4f8;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
 
-{% block title %}프로필 - 사용자 인증 시스템{% endblock %}
+    h1.title {
+      color: #e63946;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center mb-0">내 프로필</h3>
-            </div>
-            <div class="card-body">
-                <!-- 프로필 사진 섹션 -->
-                <div class="text-center mb-4">
-                    {% if profile.profile_image %}
-                        <img src="{{ profile.profile_image.url }}" alt="프로필 사진" 
-                             class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                    {% else %}
-                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" 
-                             style="width: 150px; height: 150px;">
-                            <i class="fas fa-user fa-4x text-white"></i>
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <!-- 프로필 사진 업로드 폼 -->
-                <form method="post" enctype="multipart/form-data" class="mb-4">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-8">
-                            {{ form.profile_image }}
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary">사진 업로드</button>
-                        </div>
-                    </div>
-                </form>
-                
-                <table class="table table-borderless">
-                    <tr>
-                        <th width="30%">사용자명:</th>
-                        <td>{{ user.username }}</td>
-                    </tr>
-                    <tr>
-                        <th>이름:</th>
-                        <td>{{ user.get_full_name|default:"설정되지 않음" }}</td>
-                    </tr>
-                    <tr>
-                        <th>이메일:</th>
-                        <td>{{ user.email|default:"설정되지 않음" }}</td>
-                    </tr>
-                    <tr>
-                        <th>가입일:</th>
-                        <td>{{ user.date_joined|date:"Y년 m월 d일 H:i" }}</td>
-                    </tr>
-                    <tr>
-                        <th>최근 로그인:</th>
-                        <td>{{ user.last_login|date:"Y년 m월 d일 H:i"|default:"기록 없음" }}</td>
-                    </tr>
-                    <tr>
-                        <th>스태프 권한:</th>
-                        <td>
-                            {% if user.is_staff %}
-                                <span class="badge bg-success">Yes</span>
-                            {% else %}
-                                <span class="badge bg-secondary">No</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
-                
-                <div class="text-center mt-4">
-                    <a href="{% url 'home' %}" class="btn btn-outline-primary">홈으로</a>
-                    <a href="{% url 'accounts:logout' %}" class="btn btn-outline-danger">로그아웃</a>
-                </div>
-            </div>
-        </div>
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    ul#topmenu {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    ul#topmenu li {
+      list-style: none;
+      background-color: #ffffff;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    ul#topmenu li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul#topmenu li:hover {
+      background-color: #e63946;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .content {
+      background-color: #ffffff;
+      width: 80%;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .info-box {
+      margin-bottom: 20px;
+    }
+
+    .info-box strong {
+      color: #e63946;
+    }
+    
+    .profile-image-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e63946;
+    }
+    
+    .default-profile {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #ccc;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      color: white;
+      border: 3px solid #e63946;
+    }
+    
+    .upload-form {
+      margin-top: 20px;
+    }
+    
+    .upload-form input[type="file"] {
+      margin-right: 10px;
+    }
+    
+    .upload-btn {
+      background-color: #e63946;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .upload-btn:hover {
+      background-color: #b32d3d;
+    }
+    
+    .home-btn {
+      background-color: #e63946;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      margin-right: 10px;
+    }
+    
+    .home-btn:hover {
+      background-color: #b32d3d;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">마이페이지</h1>
+  <nav>
+    <ul id="topmenu">
+      <li><a href="{% url 'home' %}">HOME</a></li>
+      <li><a href="#board">일반게시판</a></li>
+      <li><a href="#gallery">갤러리</a></li>
+      <li><a href="#admin">관리게시판</a></li>
+      <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
+    </ul>
+  </nav>
+  <div class="content">
+    <!-- 프로필 사진 섹션 -->
+    <div class="profile-image-section">
+      {% if profile.profile_image %}
+        <img src="{{ profile.profile_image.url }}" alt="프로필 사진" class="profile-image">
+      {% else %}
+        <div class="default-profile">👤</div>
+      {% endif %}
+      
+      <!-- 프로필 사진 업로드 폼 -->
+      <form method="post" enctype="multipart/form-data" class="upload-form">
+        {% csrf_token %}
+        {{ form.profile_image }}
+        <button type="submit" class="upload-btn">사진 업로드</button>
+      </form>
     </div>
-</div>
-{% endblock %}
+    
+    <div class="info-box">
+      <p><strong>아이디:</strong> {{ user.username }}</p>
+      <p><strong>성명:</strong> {{ user.get_full_name|default:"설정되지 않음" }}</p>
+      <p><strong>이메일:</strong> {{ user.email|default:"설정되지 않음" }}</p>
+      <p><strong>가입일:</strong> {{ user.date_joined|date:"Y년 m월 d일" }}</p>
+      <p><strong>최근 로그인:</strong> {{ user.last_login|date:"Y년 m월 d일 H:i"|default:"기록 없음" }}</p>
+    </div>
+    <div class="info-box">
+      <p><strong>스태프 권한:</strong> 
+        {% if user.is_staff %}
+          <span style="color: green;">Yes</span>
+        {% else %}
+          <span style="color: gray;">No</span>
+        {% endif %}
+      </p>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="{% url 'home' %}" class="home-btn">홈으로</a>
+      <a href="{% url 'accounts:logout' %}" class="home-btn">로그아웃</a>
+    </div>
+  </div>
+</body>
+</html>

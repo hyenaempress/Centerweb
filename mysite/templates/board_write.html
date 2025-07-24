@@ -172,9 +172,9 @@
   <nav>
     <ul id="topmenu">
       <li><a href="{% url 'home' %}">HOME</a></li>
-      <li><a href="board_list.html">일반게시판</a></li>
-      <li><a href="gallery.html">갤러리</a></li>
-      <li><a href="admin.html">관리게시판</a></li>
+      <li><a href="{% url 'board:board_list' %}">일반게시판</a></li>
+      <li><a href="{% url 'board:gallery_list' %}">갤러리</a></li>
+      <li><a href="{% url 'board:admin_board_list' %}">관리게시판</a></li>
       <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
     </ul>
   </nav>
@@ -193,7 +193,7 @@
       </div>
 
       <div class="button-group">
-        <a href="board_list.html" class="btn-cancel">취소</a>
+        <a href="{% url 'board:board_list' %}" class="btn-cancel">취소</a>
         <button type="submit" class="btn-submit">등록</button>
       </div>
     </form>

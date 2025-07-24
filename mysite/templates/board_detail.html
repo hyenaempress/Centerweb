@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>게시글 상세보기</title>
+  <style>
+    body {
+      font-family: "맑은 고딕", sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1.title {
+      color: #e63946;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
+
+    /* 로그인 버튼 wrapper */
+    .login-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 20px;
+    }
+
+    .login-btn {
+      background-color: white;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #e63946;
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    ul#topmenu {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    ul#topmenu li {
+      list-style: none;
+      background-color: #ffffff;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    ul#topmenu li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul#topmenu li:hover {
+      background-color: #e63946;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .content {
+      background-color: #ffffff;
+      width: 90%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .post-header {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .post-header h2 {
+      color: #1d3557;
+      margin-bottom: 10px;
+    }
+
+    .post-meta {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .post-body {
+      font-size: 1rem;
+      line-height: 1.6;
+      white-space: pre-line;
+      min-height: 200px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .button-group a {
+      background-color: white;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s ease;
+      font-size: 14px;
+    }
+
+    .button-group a:hover {
+      background-color: #e63946;
+      color: white;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background-color: #ccc;
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- 로그인 버튼 -->
+  <div class="login-wrapper">
+    {% if user.is_authenticated %}
+      <a href="{% url 'accounts:profile' %}" class="login-btn">마이페이지</a>
+      <a href="{% url 'accounts:logout' %}" class="login-btn" style="margin-left: 10px;">로그아웃</a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="login-btn">로그인</a>
+    {% endif %}
+  </div>
+
+  <h1 class="title">Master Board</h1>
+  <nav>
+    <ul id="topmenu">
+      <li><a href="{% url 'home' %}">HOME</a></li>
+      <li><a href="board_list.html">일반게시판</a></li>
+      <li><a href="gallery.html">갤러리</a></li>
+      <li><a href="admin.html">관리게시판</a></li>
+      <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <div class="post-header">
+      <h2>공지사항 확인 부탁드립니다.</h2>
+      <div class="post-meta">
+        작성자: 관리자 | 작성일: 2025-07-20 | 조회수: 132 | 좋아요: 15
+      </div>
+    </div>
+    <div class="post-body">
+      안녕하세요. <br><br>
+      최근 서버 점검으로 인해 일부 기능에 문제가 있었습니다.<br>
+      현재는 모두 복구된 상태이며, 앞으로 더 나은 서비스를 제공하기 위해 노력하겠습니다.<br><br>
+      감사합니다.
+    </div>
+
+    <div class="button-group">
+      <a href="board_write.html">수정</a>
+      <a href="board_list.html">목록</a>
+    </div>
+  </div>
+
+  <hr />
+
+</body>
+</html>

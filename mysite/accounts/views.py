@@ -84,7 +84,20 @@ def profile_view(request):
 
 # 홈 뷰
 def home_view(request):
-    return render(request, 'home.html')
+    from board.models import Post
+    
+    # 각 게시판별 최신글 3개씩 가져오기
+    general_posts = Post.objects.filter(board_type='general').order_by('-created_at')[:3]
+    gallery_posts = Post.objects.filter(board_type='gallery').order_by('-created_at')[:3]
+    admin_posts = Post.objects.filter(board_type='admin').order_by('-created_at')[:3]
+    
+    context = {
+        'general_posts': general_posts,
+        'gallery_posts': gallery_posts,
+        'admin_posts': admin_posts,
+    }
+    
+    return render(request, 'home.html', context)
 
 # 갤러리 뷰 (임시)
 def gallery_view(request):

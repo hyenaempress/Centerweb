@@ -242,22 +242,20 @@
         <th>제목</th>
         <th>작성자</th>
         <th>날짜</th>
+        <th>조회수</th>
       </tr>
+      {% for post in general_posts %}
       <tr>
-        <td>자바스크립트 질문있어요</td>
-        <td>학생1</td>
-        <td>2025-07-20</td>
+        <td><a href="{{ post.get_absolute_url }}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></td>
+        <td>{{ post.author.username }}</td>
+        <td>{{ post.created_at|date:"Y-m-d" }}</td>
+        <td>{{ post.views }}</td>
       </tr>
+      {% empty %}
       <tr>
-        <td>맛집 추천 좀 해주세요~</td>
-        <td>맛잘알</td>
-        <td>2025-07-18</td>
+        <td colspan="4">등록된 게시글이 없습니다.</td>
       </tr>
-      <tr>
-        <td>방학계획 공유해요</td>
-        <td>쏘스윗</td>
-        <td>2025-07-15</td>
-      </tr>
+      {% endfor %}
     </table>
     <div class="more-btn-wrapper">
       <a href="{% url 'board:board_list' %}" class="more-btn">+ 더보기</a>
@@ -268,18 +266,21 @@
   <div class="content">
     <h2>🖼 갤러리 최근 글</h2>
     <div class="gallery">
+      {% for post in gallery_posts %}
       <div class="gallery-item">
-        <img src="/static/img/photo1.jpg" alt="사진1" />
-        <p>여름 캠핑⛺</p>
+        {% if post.image %}
+          <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+        {% else %}
+          <img src="/static/img/no-image.jpg" alt="이미지 없음" />
+        {% endif %}
+        <p><a href="{{ post.get_absolute_url }}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></p>
+        <small>{{ post.author.username }} | {{ post.created_at|date:"m-d" }}</small>
       </div>
+      {% empty %}
       <div class="gallery-item">
-        <img src="/static/img/photo2.jpg" alt="사진2" />
-        <p>우리집 고양이🐱</p>
+        <p>등록된 갤러리가 없습니다.</p>
       </div>
-      <div class="gallery-item">
-        <img src="/static/img/photo3.jpg" alt="사진3" />
-        <p>벚꽃길🌸</p>
-      </div>
+      {% endfor %}
     </div>
     <div class="more-btn-wrapper">
       <a href="{% url 'board:gallery_list' %}" class="more-btn">+ 더보기</a>
@@ -292,20 +293,20 @@
     <table class="preview-table">
       <tr>
         <th>제목</th>
+        <th>작성자</th>
         <th>작성일</th>
       </tr>
+      {% for post in admin_posts %}
       <tr>
-        <td>[공지] 서버 점검 안내</td>
-        <td>2025-07-10</td>
+        <td><a href="{{ post.get_absolute_url }}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></td>
+        <td>{{ post.author.username }}</td>
+        <td>{{ post.created_at|date:"Y-m-d" }}</td>
       </tr>
+      {% empty %}
       <tr>
-        <td>[필독] 커뮤니티 규칙 개정</td>
-        <td>2025-07-05</td>
+        <td colspan="3">등록된 공지사항이 없습니다.</td>
       </tr>
-      <tr>
-        <td>[이벤트] 후기 작성 이벤트</td>
-        <td>2025-07-01</td>
-      </tr>
+      {% endfor %}
     </table>
     <div class="more-btn-wrapper">
       <a href="{% url 'board:admin_board_list' %}" class="more-btn">+ 더보기</a>

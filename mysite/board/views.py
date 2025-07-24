@@ -157,6 +157,7 @@ def post_edit(request, pk):
         'form': form,
         'post': post,
         'title': f'{post.get_board_type_display()} 글 수정',
+        'board_type': post.board_type,
         'is_edit': True
     })
 

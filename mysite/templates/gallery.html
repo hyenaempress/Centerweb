@@ -168,9 +168,9 @@
     <nav>
         <ul id="topmenu">
             <li><a href="{% url 'home' %}">HOME</a></li>
-            <li><a href="board_list.html">일반게시판</a></li>
-            <li><a href="gallery.html">갤러리</a></li>
-            <li><a href="admin.html">관리게시판</a></li>
+            <li><a href="{% url 'board:board_list' %}">일반게시판</a></li>
+            <li><a href="{% url 'board:gallery_list' %}">갤러리</a></li>
+            <li><a href="{% url 'board:admin_board_list' %}">관리게시판</a></li>
             <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
         </ul>
     </nav>
@@ -180,64 +180,51 @@
 
         <!-- 글 작성하기 버튼 -->
         <div class="more-btn-wrapper">
-            <a href="gallery_write.html" class="write-button">글 작성하기</a>
+            <a href="{% url 'board:gallery_create' %}" class="write-button">글 작성하기</a>
         </div>
 
         <div class="gallery">
+            {% for post in posts %}
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 1">
-                <p>제목1</p>
+                {% if post.image %}
+                    <a href="{% url 'board:post_detail' post.pk %}">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    </a>
+                {% else %}
+                    <a href="{% url 'board:post_detail' post.pk %}">
+                        <img src="https://via.placeholder.com/200x150" alt="{{ post.title }}">
+                    </a>
+                {% endif %}
+                <p><a href="{% url 'board:post_detail' post.pk }}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></p>
             </div>
-
+            {% empty %}
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 2">
-                <p>제목2</p>
+                <img src="https://via.placeholder.com/200x150" alt="등록된 사진이 없음">
+                <p>등록된 사진이 없습니다.</p>
             </div>
-
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 3">
-                <p>제목3</p>
-            </div>
-
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 4">
-                <p>제목4</p>
-            </div>
-
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 5">
-                <p>제목5</p>
-            </div>
-
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 6">
-                <p>제목6</p>
-            </div>
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 7">
-                <p>제목7</p>
-            </div>
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 8">
-                <p>제목8</p>
-            </div>
-            <div class="gallery-item">
-                <img src="https://via.placeholder.com/200x150" alt="샘플 이미지 9">
-                <p>제목9</p>
-            </div>
-        
+            {% endfor %}
         </div>
     </div>
 
+    {% if posts.has_other_pages %}
     <div class="pagination">
-        <a href="#">&laquo;</a>
-        <a href="#" class="active">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">4</a>
-        <a href="#">5</a>
-        <a href="#">&raquo;</a>
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">&laquo;</a>
+        {% endif %}
+        
+        {% for num in posts.paginator.page_range %}
+            {% if posts.number == num %}
+                <a href="?page={{ num }}" class="active">{{ num }}</a>
+            {% else %}
+                <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">&raquo;</a>
+        {% endif %}
     </div>
+    {% endif %}
 
     <hr>
 </body>

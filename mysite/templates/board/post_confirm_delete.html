@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>게시글 삭제 - Master Board</title>
+  <style>
+    body {
+      font-family: "맑은 고딕", sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1.title {
+      color: #e63946;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
+
+    /* 로그인 버튼 wrapper */
+    .login-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 20px;
+    }
+
+    .login-btn {
+      background-color: white;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #e63946;
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    ul#topmenu {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    ul#topmenu li {
+      list-style: none;
+      background-color: #ffffff;
+      color: #1d3557;
+      border: 1px solid #e63946;
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    ul#topmenu li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul#topmenu li:hover {
+      background-color: #e63946;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .content {
+      background-color: #ffffff;
+      width: 80%;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+
+    .delete-warning {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .delete-warning h3 {
+      color: #856404;
+      margin-top: 0;
+    }
+
+    .delete-warning p {
+      color: #856404;
+      margin-bottom: 0;
+    }
+
+    .post-info {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .post-info h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #1d3557;
+    }
+
+    .post-meta {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .post-content {
+      color: #333;
+      line-height: 1.4;
+      max-height: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .button-group button, .button-group a {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background-color: #c82333;
+    }
+
+    .btn-cancel {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background-color: #5a6268;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background-color: #ccc;
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- 로그인 버튼 -->
+  <div class="login-wrapper">
+    {% if user.is_authenticated %}
+      <a href="{% url 'accounts:profile' %}" class="login-btn">마이페이지</a>
+      <a href="{% url 'accounts:logout' %}" class="login-btn" style="margin-left: 10px;">로그아웃</a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="login-btn">로그인</a>
+    {% endif %}
+  </div>
+
+  <h1 class="title">Master Board</h1>
+  <nav>
+    <ul id="topmenu">
+      <li><a href="{% url 'home' %}">HOME</a></li>
+      <li><a href="{% url 'board:board_list' %}">일반게시판</a></li>
+      <li><a href="{% url 'board:gallery_list' %}">갤러리</a></li>
+      <li><a href="{% url 'board:admin_board_list' %}">관리게시판</a></li>
+      <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <div class="delete-warning">
+      <h3>⚠️ 게시글 삭제</h3>
+      <p>정말로 이 게시글을 삭제하시겠습니까?<br>
+      삭제된 게시글은 복구할 수 없습니다.</p>
+    </div>
+
+    <div class="post-info">
+      <h4>{{ post.title }}</h4>
+      <div class="post-meta">
+        작성자: {{ post.author.username }} | 
+        작성일: {{ post.created_at|date:"Y-m-d H:i" }} | 
+        게시판: {{ post.get_board_type_display }}
+      </div>
+      <div class="post-content">
+        {{ post.content|truncatewords:20 }}
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="button-group">
+        <a href="{% url 'board:post_detail' post.pk %}" class="btn-cancel">취소</a>
+        <button type="submit" class="btn-delete">삭제하기</button>
+      </div>
+    </form>
+  </div>
+
+  <hr />
+</body>
+</html>

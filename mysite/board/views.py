@@ -37,8 +37,7 @@ def gallery_list(request):
         'board_type': 'gallery'
     })
 
-# 관리자 게시판 목록
-@user_passes_test(is_staff)
+# 관리자 게시판 목록 (읽기는 모든 사용자, 쓰기는 관리자만)
 def admin_board_list(request):
     posts = Post.objects.filter(board_type='admin').order_by('-created_at')
     paginator = Paginator(posts, 10)  # 페이지당 10개

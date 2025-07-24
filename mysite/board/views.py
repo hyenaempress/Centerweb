@@ -114,7 +114,7 @@ def admin_post_create(request):
             post.board_type = 'admin'
             post.save()
             messages.success(request, '관리자 게시글이 성공적으로 작성되었습니다.')
-            return redirect('board:post_detail', pk=post.pk)
+            return redirect('board:admin_board_list')
     else:
         form = PostForm()
     

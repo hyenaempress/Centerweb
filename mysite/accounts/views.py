@@ -85,4 +85,28 @@ def profile_view(request):
 # 홈 뷰
 def home_view(request):
     return render(request, 'home.html')
+
+# 갤러리 뷰 (임시)
+def gallery_view(request):
+    return render(request, 'gallery.html')
+
+# 게시판 리스트 뷰 (임시)
+def board_list_view(request):
+    return render(request, 'board_list.html')
+
+# 게시판 상세 뷰 (임시)
+def board_detail_view(request):
+    return render(request, 'board_detail.html')
+
+# 게시판 작성 뷰 (임시)
+def board_write_view(request):
+    return render(request, 'board_write.html')
+
+# 갤러리 상세 뷰 (임시)
+def gallery_detail_view(request):
+    return render(request, 'gallery_detail.html')
+
+# 갤러리 작성 뷰 (임시)
+def gallery_write_view(request):
+    return render(request, 'gallery_write.html')
 # Create your views here.

@@ -216,7 +216,7 @@
         <h2>일반 게시판</h2>
 
         <div class="more-btn-wrapper">
-            <a href="board_write.html" class="write-button">글 작성하기</a>
+            <a href="{% url 'board:post_create' %}" class="write-button">글 작성하기</a>
         </div>
 
         <table>
@@ -231,30 +231,20 @@
                 </tr>
             </thead>
             <tbody>
+                {% for post in posts %}
                 <tr>
-                    <td>3</td>
-                    <td><a href="board_detail.html">공지사항 확인 부탁드립니다.</a></td>
-                    <td>관리자</td>
-                    <td>2025-07-20</td>
-                    <td>132</td>
-                    <td class="like-col">15</td>
+                    <td>{{ post.id }}</td>
+                    <td><a href="{% url 'board:post_detail' post.pk %}">{{ post.title }}</a></td>
+                    <td>{{ post.author.username }}</td>
+                    <td>{{ post.created_at|date:"Y-m-d" }}</td>
+                    <td>{{ post.views }}</td>
+                    <td class="like-col">{{ post.likes }}</td>
                 </tr>
+                {% empty %}
                 <tr>
-                    <td>2</td>
-                    <td><a href="board_detail.html">자유롭게 글 남겨주세요!</a></td>
-                    <td>홍길동</td>
-                    <td>2025-07-19</td>
-                    <td>98</td>
-                    <td class="like-col">22</td>
+                    <td colspan="6">등록된 게시글이 없습니다.</td>
                 </tr>
-                <tr>
-                    <td>1</td>
-                    <td><a href="board_detail.html">첫 게시글입니다.</a></td>
-                    <td>관리자</td>
-                    <td>2025-07-18</td>
-                    <td>76</td>
-                    <td class="like-col">12</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

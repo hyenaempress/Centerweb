@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}로그인 - Django 인증 시스템{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center mb-0">로그인</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">사용자명</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">비밀번호</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="text-danger small">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">로그인</button>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="text-danger small mt-2">{{ form.non_field_errors }}</div>
+                    {% endif %}
+                </form>
+
+                <div class="text-center mt-3">
+                    <p>계정이 없으신가요? <a href="{% url 'accounts:signup' %}">회원가입</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

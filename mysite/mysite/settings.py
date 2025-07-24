@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts', # 어카운트 앱 추가, 디렉토리 추가
+    'board',  # 추가
+
 ]
 
 MIDDLEWARE = [

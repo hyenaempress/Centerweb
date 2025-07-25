@@ -295,8 +295,8 @@ find . -type f | head -20  # Linux/macOS
 - ✅ **개발 통합 관리로 성공적 프로젝트 완료**
 
 ## 🌐 배포 (Google App Engine) 
-구글 계정정보 포함 파일으로 비공개로 분리 ->https://github.com/hyenaempress/Centerweb_security
-현재 배포 중지, 계정 폐쇄 
+배포를 위한 파일은 구글 계정정보 포함 파일으로 git 비공개로 분리 ->https://github.com/hyenaempress/Centerweb_security
+ 
 
 <배포 실행영상>
 https://github.com/hyenaempress/Centerweb/blob/6b0ba993747b93801440bc11648f1efc0b2d8909/%EC%8B%A4%ED%96%89%ED%99%94%EB%A9%B4%EB%85%B9%ED%99%94_20250725_170531916.mp4
@@ -307,6 +307,8 @@ https://github.com/hyenaempress/Centerweb/blob/6b0ba993747b93801440bc11648f1efc0
 - **관리자 계정**: `admin` / `변경되었음, 비공개`
 - **배포 플랫폼**: Google Cloud App Engine
 - **배포 일시**: 2025년 7월 25일
+현재 배포 중지, 계정 폐쇄
+
 
 ### 배포 환경 설정
 

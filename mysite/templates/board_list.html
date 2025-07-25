@@ -249,15 +249,25 @@
         </table>
     </div>
 
+    {% if posts.has_other_pages %}
     <div class="pagination">
-        <a href="#">&laquo;</a>
-        <a href="#" class="active">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">4</a>
-        <a href="#">5</a>
-        <a href="#">&raquo;</a>
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">&laquo;</a>
+        {% endif %}
+        
+        {% for num in posts.paginator.page_range %}
+            {% if posts.number == num %}
+                <a href="?page={{ num }}" class="active">{{ num }}</a>
+            {% else %}
+                <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">&raquo;</a>
+        {% endif %}
     </div>
+    {% endif %}
 
     <hr>
 </body>

@@ -195,7 +195,7 @@
                         <img src="https://via.placeholder.com/200x150" alt="{{ post.title }}">
                     </a>
                 {% endif %}
-                <p><a href="{% url 'board:post_detail' post.pk }}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></p>
+                <p><a href="{% url 'board:post_detail' post.pk %}" style="text-decoration: none; color: inherit;">{{ post.title }}</a></p>
             </div>
             {% empty %}
             <div class="gallery-item">

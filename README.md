@@ -80,9 +80,13 @@ Master Board라는 이름의 다기능 게시판 시스템으로, 일반게시�
 - **프리테스트 기반 QA 요청 문서 작성**
 - **QA**: 진범광(로그인/로그아웃), 박태응(게시판)
 - **개발 완료**: 목표 일정 내 성공적 완료 ✅
-- **추가 배포 작업**: 박수연이 Google Cloud App Engine 배포 진행
-- **운영 환경 구축**: 파일 업로드, DB 이슈 해결 및 실서비스 배포 완료
+
 - 📋 [QA 요청 문서](https://docs.google.com/presentation/d/15l9z946mHTCSn7FTQYzodXyT3QAiSB1OdqPsf2xuq0k/edit)
+
+- ### 7월 25일 (금) - 과제 외 추가진행
+- **배포 작업**: 박수연이 Google Cloud App Engine 배포 진행 (완료)
+- **운영 환경 구축**: 파일 업로드, DB 이슈 해결 및 실서비스 배포 (완료)
+- **반응형 업데이트**: 진범광, 반응형 CSS 적용 (진행중/적용전)
 
 ## 🛠 기술 스택
 

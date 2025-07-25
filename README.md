@@ -296,7 +296,8 @@ find . -type f | head -20  # Linux/macOS
 - ✅ **문제 해결 과정에서 기술적 성장**
 - ✅ **개발 통합 관리로 성공적 프로젝트 완료**
 
-## 🌐 배포 (Google App Engine)
+## 🌐 배포 (Google App Engine) 
+브런치 gc_server
 
 ### 배포된 사이트
 - **Production URL**: https://centerweb-project.du.r.appspot.com

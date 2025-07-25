@@ -297,7 +297,7 @@ find . -type f | head -20  # Linux/macOS
 - ✅ **개발 통합 관리로 성공적 프로젝트 완료**
 
 ## 🌐 배포 (Google App Engine) 
-브런치 gc_server
+구글 계정정보 포함 파일으로 비공개로 분리 ->https://github.com/hyenaempress/Centerweb_security
 현재 배포 중지, 계정 폐쇄 
 
 ### 배포된 사이트

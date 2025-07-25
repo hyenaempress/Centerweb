@@ -300,7 +300,7 @@ find . -type f | head -20  # Linux/macOS
 
 ### 배포된 사이트
 - **Production URL**: https://centerweb-project.du.r.appspot.com
-- **관리자 계정**: `admin` / `admin123`
+- **관리자 계정**: `admin` / `변경되었음, 비공개`
 - **배포 플랫폼**: Google Cloud App Engine
 - **배포 일시**: 2025년 7월 25일
 

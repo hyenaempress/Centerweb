@@ -142,9 +142,9 @@
   <nav>
     <ul id="topmenu">
       <li><a href="{% url 'home' %}">HOME</a></li>
-      <li><a href="#board">일반게시판</a></li>
-      <li><a href="#gallery">갤러리</a></li>
-      <li><a href="#admin">관리게시판</a></li>
+      <li><a href="{% url 'board:board_list' %}">일반게시판</a></li>
+      <li><a href="{% url 'board:gallery_list' %}">갤러리</a></li>
+      <li><a href="{% url 'board:admin_board_list' %}">관리게시판</a></li>
       <li><a href="{% url 'accounts:profile' %}">마이페이지</a></li>
     </ul>
   </nav>

@@ -5,7 +5,11 @@ Copyright (c) 2025 박수연 , 진범광 , 박태응
 별도의 서면 동의 없이 상업적 사용, 무단 재배포, 서비스 배포에 사용할 수 없습니다.  
 문의: catnaro16@gmail.com
 
-> Django 기반의 웹 게시판 시스템 개발 프로젝트  
+<a href="https://www.youtube.com/watch?v=_NJXpDj-pYY">
+  <img src="https://img.youtube.com/vi/_NJXpDj-pYY/maxresdefault.jpg" alt="CenterWeb Demo" width="500">
+</a>
+
+Django 기반의 웹 게시판 시스템 개발 프로젝트  
 > **🎯 목표 개발 일정**: 2024년 7월 25일 (과제 마감일)
 
 ## 📋 프로젝트 개요

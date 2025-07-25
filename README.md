@@ -298,6 +298,7 @@ find . -type f | head -20  # Linux/macOS
 
 ## 🌐 배포 (Google App Engine) 
 브런치 gc_server
+현재 배포 중지, 계정 폐쇄 
 
 ### 배포된 사이트
 - **Production URL**: https://centerweb-project.du.r.appspot.com

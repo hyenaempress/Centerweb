@@ -169,6 +169,17 @@
       background-color: #b32d3d !important;
     }
 
+    .like-button.unliked {
+      background-color: white !important;
+      color: #1d3557 !important;
+      border: 1px solid #e63946;
+    }
+
+    .like-button.unliked:hover {
+      background-color: #e63946 !important;
+      color: white !important;
+    }
+
     hr {
       border: none;
       height: 1px;
@@ -223,8 +234,8 @@
     <div class="button-group">
       <div class="left-buttons">
         {% if user.is_authenticated %}
-        <button id="like-btn" class="like-button" onclick="likePost({{ post.pk }})">
-          좋아요 ❤️
+        <button id="like-btn" class="like-button {% if not is_liked %}unliked{% endif %}" onclick="likePost({{ post.pk }})">
+          {% if is_liked %}좋아요 취소 💔{% else %}좋아요 ❤️{% endif %}
         </button>
         {% endif %}
       </div>
@@ -261,6 +272,15 @@
       .then(data => {
         if (data.likes !== undefined) {
           document.getElementById('like-count').textContent = data.likes;
+          
+          const likeBtn = document.getElementById('like-btn');
+          if (data.is_liked) {
+            likeBtn.innerHTML = '좋아요 취소 💔';
+            likeBtn.classList.remove('unliked');
+          } else {
+            likeBtn.innerHTML = '좋아요 ❤️';
+            likeBtn.classList.add('unliked');
+          }
         }
       })
       .catch(error => {

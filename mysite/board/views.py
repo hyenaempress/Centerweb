@@ -58,7 +58,13 @@ def post_detail(request, pk):
     if request.user != post.author:
         post.increment_views()
     
-    return render(request, 'board/post_detail.html', {'post': post})
+    # 사용자가 좋아요를 눌렀는지 확인
+    is_liked = post.is_liked_by(request.user)
+    
+    return render(request, 'board/post_detail.html', {
+        'post': post,
+        'is_liked': is_liked
+    })
 
 # 일반 게시글 작성
 @login_required
@@ -190,6 +196,9 @@ def post_delete(request, pk):
 def post_like(request, pk):
     if request.method == 'POST':
         post = get_object_or_404(Post, pk=pk)
-        post.increment_likes()
-        return JsonResponse({'likes': post.likes})
+        is_liked = post.toggle_like(request.user)
+        return JsonResponse({
+            'likes': post.likes,
+            'is_liked': is_liked
+        })
     return JsonResponse({'error': 'Invalid request'}, status=400)

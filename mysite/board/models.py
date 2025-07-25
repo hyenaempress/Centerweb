@@ -42,3 +42,39 @@ class Post(models.Model):
         """좋아요 증가"""
         self.likes += 1
         self.save(update_fields=['likes'])
+    
+    def toggle_like(self, user):
+        """사용자의 좋아요 토글"""
+        like, created = PostLike.objects.get_or_create(post=self, user=user)
+        if not created:
+            # 이미 좋아요가 있으면 제거
+            like.delete()
+            self.likes = max(0, self.likes - 1)
+            self.save(update_fields=['likes'])
+            return False
+        else:
+            # 새로운 좋아요 추가
+            self.likes += 1
+            self.save(update_fields=['likes'])
+            return True
+    
+    def is_liked_by(self, user):
+        """사용자가 좋아요를 눌렀는지 확인"""
+        if user.is_authenticated:
+            return PostLike.objects.filter(post=self, user=user).exists()
+        return False
+
+
+class PostLike(models.Model):
+    """게시글 좋아요 모델"""
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('post', 'user')  # 한 사용자는 한 게시글에 하나의 좋아요만
+        verbose_name = '게시글 좋아요'
+        verbose_name_plural = '게시글 좋아요'
+    
+    def __str__(self):
+        return f'{self.user.username} - {self.post.title}'

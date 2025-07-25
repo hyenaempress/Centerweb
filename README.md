@@ -102,7 +102,6 @@ Master Board라는 이름의 다기능 게시판 시스템으로, 일반게시�
 - **HTML5** - 마크업 언어
 - **CSS3** - 스타일시트
 - **JavaScript (ES6+)** - 클라이언트 사이드 스크립팅
-- **Responsive Design** - 반응형 웹 디자인
 
 ### Authentication & Security
 - **Django Authentication System** - 내장 인증 시스템

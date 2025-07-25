@@ -79,7 +79,9 @@ Master Board라는 이름의 다기능 게시판 시스템으로, 일반게시�
 - **통합 테스트 QA**
 - **프리테스트 기반 QA 요청 문서 작성**
 - **QA**: 진범광(로그인/로그아웃), 박태응(게시판)
-- **최종 제출**: 목표 일정 내 성공적 완료 ✅
+- **개발 완료**: 목표 일정 내 성공적 완료 ✅
+- **추가 배포 작업**: 박수연이 Google Cloud App Engine 배포 진행
+- **운영 환경 구축**: 파일 업로드, DB 이슈 해결 및 실서비스 배포 완료
 - 📋 [QA 요청 문서](https://docs.google.com/presentation/d/15l9z946mHTCSn7FTQYzodXyT3QAiSB1OdqPsf2xuq0k/edit)
 
 ## 🛠 기술 스택
@@ -290,9 +292,290 @@ find . -type f | head -20  # Linux/macOS
 - ✅ **문제 해결 과정에서 기술적 성장**
 - ✅ **개발 통합 관리로 성공적 프로젝트 완료**
 
+## 🌐 배포 (Google App Engine)
+
+### 배포된 사이트
+- **Production URL**: https://centerweb-project.du.r.appspot.com
+- **관리자 계정**: `admin` / `admin123`
+- **배포 플랫폼**: Google Cloud App Engine
+- **배포 일시**: 2025년 7월 25일
+
+### 배포 환경 설정
+
+#### 필요 파일
+```
+Centerweb/
+├── app.yaml              # App Engine 설정 파일
+├── main.py               # WSGI 애플리케이션 진입점
+├── requirements.txt      # Python 의존성
+└── .gcloudignore        # 배포 제외 파일 설정
+```
+
+#### app.yaml 설정
+```yaml
+runtime: python311
+
+env_variables:
+  SECRET_KEY: "django-insecure-your-secret-key"
+  DEBUG: "False"
+
+handlers:
+- url: /static
+  static_dir: staticfiles
+- url: /.*
+  script: auto
+
+automatic_scaling:
+  min_instances: 1
+  max_instances: 3
+  target_cpu_utilization: 0.6
+```
+
+#### main.py (WSGI 진입점)
+```python
+import os
+import sys
+from django.core.wsgi import get_wsgi_application
+
+# Django 프로젝트 경로 추가
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'mysite'))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+
+# 자동 데이터베이스 마이그레이션 및 관리자 계정 생성
+try:
+    import django
+    django.setup()
+    from django.core.management import call_command
+    from django.contrib.auth.models import User
+    
+    call_command('migrate', verbosity=0, interactive=False)
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+        
+except Exception as e:
+    print(f"Setup error: {e}")
+
+app = get_wsgi_application()
+```
+
+#### requirements.txt
+```
+Django==5.2.4
+Pillow==11.3.0
+gunicorn==21.2.0
+```
+
+### 배포 과정
+
+#### 1. 사전 준비
+```bash
+# Google Cloud SDK 설치 후
+gcloud init
+gcloud auth login
+gcloud config set project centerweb-project
+```
+
+#### 2. 배포 설정
+```bash
+cd D:\Centerweb
+
+# 정적 파일 수집
+cd mysite
+python manage.py collectstatic --noinput
+cd ..
+
+# 배포 실행
+gcloud app deploy
+```
+
+#### 3. 배포 후 확인
+```bash
+# 애플리케이션 열기
+gcloud app browse
+
+# 로그 확인
+gcloud app logs tail -s default
+```
+
+### 배포 환경 특징
+
+#### 데이터베이스 설정
+- **로컬 환경**: SQLite (`db.sqlite3`)
+- **App Engine 환경**: 임시 SQLite (`/tmp/db.sqlite3`)
+- **자동 마이그레이션**: 앱 시작 시 자동 실행
+- **관리자 계정**: 자동 생성 (`admin` / `admin123`)
+
+#### 주요 해결 과제
+1. **읽기 전용 파일시스템 문제**
+   - App Engine의 읽기 전용 환경
+   - `/tmp` 디렉토리 활용으로 해결
+
+2. **정적 파일 처리**
+   - `STATIC_ROOT = 'staticfiles'` 설정
+   - `collectstatic` 명령어로 수집
+
+3. **환경별 설정 분리**
+   - `GAE_APPLICATION` 환경변수로 운영/개발 구분
+   - `DEBUG` 모드 환경변수 제어
+
+### 모니터링 및 관리
+
+```bash
+# 버전 관리
+gcloud app versions list
+
+# 트래픽 분할
+gcloud app services set-traffic default --splits=VERSION_ID=1
+
+# 로그 모니터링
+gcloud app logs tail -s default --level=info
+```
+
+### 배포 체크리스트
+- [x] `app.yaml` 파일 생성
+- [x] `main.py` WSGI 앱 설정
+- [x] `requirements.txt` 의존성 정의
+- [x] `settings.py` ALLOWED_HOSTS 설정
+- [x] 정적 파일 수집 (`collectstatic`)
+- [x] 데이터베이스 환경별 설정
+- [x] 자동 마이그레이션 설정
+- [x] 관리자 계정 자동 생성
+- [x] 배포 및 동작 확인
+
+## 🐛 배포 중 발견된 주요 이슈 및 해결방법
+
+### 2025년 7월 25일 추가 디버깅 과정
+
+#### 1. 갤러리 이미지 업로드 실패 문제
+
+**문제 상황**:
+```
+OSError: [Errno 30] Read-only file system: '/workspace/gallery'
+```
+
+**원인 분석**:
+- App Engine 환경의 읽기 전용 파일시스템 제약
+- Django가 Google Cloud Storage 대신 로컬 파일시스템 사용
+- `DEFAULT_FILE_STORAGE` 설정이 제대로 적용되지 않음
+
+**해결 과정**:
+
+1. **환경 변수 감지 개선**
+   ```python
+   # settings.py에서 환경 감지 로직 강화
+   IS_APP_ENGINE = (
+       os.environ.get('GAE_APPLICATION', None) or 
+       os.environ.get('SERVER_SOFTWARE', '').startswith('Google App Engine/')
+   )
+   ```
+
+2. **Google Cloud Storage 설정 추가**
+   ```python
+   # requirements.txt 업데이트
+   django-storages==1.14.4
+   google-cloud-storage==2.10.0
+   
+   # settings.py Google Cloud Storage 설정
+   if IS_APP_ENGINE:
+       DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+       GS_BUCKET_NAME = 'centerweb-project.appspot.com'
+       GS_DEFAULT_ACL = 'publicRead'
+   ```
+
+3. **Django 4.2+ STORAGES 설정 적용**
+   ```python
+   # 최종 해결: Django 4.2+ 방식으로 변경
+   STORAGES = {
+       "default": {
+           "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+       },
+       "staticfiles": {
+           "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+       },
+   }
+   ```
+
+4. **디버깅 로깅 추가**
+   ```python
+   # 환경 변수 및 설정 상태 확인용 로그
+   print(f"DEBUG: GAE_APPLICATION = {os.environ.get('GAE_APPLICATION', 'None')}")
+   print(f"DEBUG: STORAGES 설정 완료 - {STORAGES}")
+   ```
+
+#### 2. 데이터베이스 세션 오류
+
+**문제 상황**:
+```
+django.db.utils.OperationalError: no such table: django_session
+```
+
+**원인**:
+- App Engine 재배포 시 `/tmp` 디렉토리 초기화
+- 마이그레이션은 실행되지만 세션 테이블 누락
+
+**해결방법**:
+```python
+# main.py에서 자동 마이그레이션 강화
+call_command('migrate', verbosity=0, interactive=False)
+# 추가 세션 테이블 생성 보장
+call_command('migrate', 'sessions', verbosity=0, interactive=False)
+```
+
+#### 3. 배포 과정에서의 추가 최적화
+
+**파일 업로드 경로 설정**:
+```python
+# models.py - 갤러리 이미지 업로드 경로
+image = models.ImageField(upload_to='gallery/', blank=True, null=True)
+```
+
+**에러 처리 강화**:
+```python
+# views.py - 갤러리 업로드 에러 핸들링
+try:
+    post.save()
+    messages.success(request, '갤러리 글이 성공적으로 업로드되었습니다.')
+except Exception as e:
+    import traceback
+    print(f"갤러리 업로드 에러: {e}")
+    print(f"상세 에러: {traceback.format_exc()}")
+    messages.error(request, f'이미지 업로드 중 오류가 발생했습니다: {str(e)}')
+```
+
+### 배포 성과 및 학습 내용
+
+#### 기술적 성과
+- ✅ **Google Cloud Storage 통합**: 파일 업로드 시스템 완전 구현
+- ✅ **App Engine 환경 최적화**: 읽기 전용 파일시스템 제약 극복
+- ✅ **자동화된 배포 프로세스**: 마이그레이션, 관리자 계정 생성 자동화
+- ✅ **환경별 설정 분리**: 개발/운영 환경 완전 분리
+
+#### 학습한 핵심 개념
+1. **클라우드 스토리지 통합**: Django-storages를 통한 Google Cloud Storage 연동
+2. **App Engine 제약사항**: 읽기 전용 파일시스템과 임시 디렉토리 활용
+3. **Django 4.2+ STORAGES**: 새로운 스토리지 설정 방식 적용
+4. **배포 환경 디버깅**: 로그 기반 실시간 문제 해결
+
+#### 최종 배포 구성
+```yaml
+# 최종 app.yaml
+runtime: python311
+env_variables:
+  SECRET_KEY: "django-insecure-key"
+  DEBUG: "True"  # 디버깅 시에만 True
+
+# 최종 requirements.txt
+Django==5.2.4
+Pillow==11.3.0
+gunicorn==21.2.0
+django-storages==1.14.4
+google-cloud-storage==2.10.0
+```
+
 ---
 
 **개발 기간**: 2024년 7월 14일 ~ 7월 25일 (12일)  
-**목표 마감일**: 2024년 7월 25일 (과제 제출 마감)  
+**배포 일시**: 2025년 7월 25일  
+**추가 디버깅**: 2025년 7월 25일 (갤러리 업로드 기능 완성)  
 **개발 인원**: 3명  
-**프로젝트 상태**: ✅ **목표 일정 내 성공적 완료**
+**프로젝트 상태**: ✅ **목표 일정 내 성공적 완료 및 운영 배포**
